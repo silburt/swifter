@@ -5,7 +5,7 @@ from subprocess import call
 N = raw_input("Number of bodies to track: ")
 N = int(N)
 
-for i in xrange(0,N+1):
+for i in xrange(1,N+1):
     args = ["./tool_follow", "param.in", str(i),"1",str(i)]
     call(args)
 
