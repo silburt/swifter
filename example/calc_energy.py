@@ -6,6 +6,7 @@ import glob
 import numpy as np
 import re
 import matplotlib.pyplot as plt
+import sys
 
 def get_mass(mass_file, tp):
     fos = open(mass_file,'r')
@@ -29,12 +30,13 @@ def get_mass(mass_file, tp):
 def get_energy(cube, m, iteration, N_bods):
     K = 0
     U = 0
+    G = 1   #G=1 units
     for i in xrange(0,N_bods):
         dx = cube[i][iteration][2]
         dy = cube[i][iteration][3]
         dz = cube[i][iteration][4]
         r = (dx*dx + dy*dy + dz*dz)**0.5
-        U -= m[0]*m[i+1]/r          #U_sun/massive body
+        U -= G*m[0]*m[i+1]/r          #U_sun/massive body
         v2 = cube[i][iteration][5]**2 + cube[i][iteration][6]**2 + cube[i][iteration][7]**2
         K += 0.5*m[i+1]*v2          #KE body
         for j in xrange(i+1,N_bods):
@@ -42,13 +44,14 @@ def get_energy(cube, m, iteration, N_bods):
             ddy = dy - cube[j][iteration][3]
             ddz = dz - cube[j][iteration][4]
             r = (ddx*ddx + ddy*ddy + ddz*ddz)**0.5
-            U -= m[i+1]*m[j+1]/r    #U between bodies
+            U -= G*m[i+1]*m[j+1]/r    #U between bodies
     return U + K
 
 def natural_key(string_):
     return [int(s) if s.isdigit() else s for s in re.split(r'(\d+)', string_)]
 
-files = glob.glob("follow/*.txt")
+dir = sys.argv[1]
+files = glob.glob(dir+'*.txt')
 files = sorted(files, key=natural_key)
 N_bodies = len(files)
 
@@ -82,5 +85,6 @@ for i in xrange(0,N_output):
 plt.plot(time, dE, 'o')
 plt.yscale('log')
 plt.xscale('log')
+plt.savefig(dir+'Energy.png')
 plt.show()
 

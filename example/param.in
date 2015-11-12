@@ -4,13 +4,14 @@
 !NPLMAX         -1                 ! not used
 !NTPMAX         -1                 ! not used
 T0             0.0E0
-TSTOP          3.6525E8            ! simulation length is 1 Myr
+TSTOP          3.6525E10            ! simulation length is 10 Myr
 DT             365.25E0            ! stepsize is 1 year
+!DT             36.50E0
 PL_IN          pl.in
 TP_IN          tp.in
 IN_TYPE        ASCII
 ISTEP_OUT      10000               ! output every 10K years
-BIN_OUT        bin.dat
+BIN_OUT        out.dat
 OUT_TYPE       REAL8               !
 OUT_FORM       XV                  ! osculating element output
 OUT_STAT       NEW

@@ -1,1 +1,3 @@
-example/follow/*
+example/output/*
+example/*.bin
+example/*.dat
