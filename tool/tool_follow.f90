@@ -83,8 +83,8 @@ PROGRAM tool_follow
 ! Executable code
      CALL util_version
      !WRITE(*,100,ADVANCE="NO")"Enter name of parameter data file: "
-     CALL getarg(1,inparfile)       !A.S.
-     CALL getarg(2,tempifol)        !A.S.
+     CALL getarg(1,inparfile)       !A.S. - inparfile is already a string so no extra work needed
+     CALL getarg(2,tempifol)        !A.S. - we want ifol to be a float so need to read it below
      CALL getarg(3,tempnskp)        !A.S.
      CALL getarg(4,tempfileno)      !A.S.
      READ (tempifol, *) ifol        !A.S.

@@ -73,7 +73,7 @@ PROGRAM swifter_symba
      INTEGER(I4B)                                      :: nplplenc, npltpenc, nmergeadd, nmergesub
      REAL(DP)                                          :: t, tfrac, tbase, mtiny, ke, pe, te, eoffset
      REAL(DP), DIMENSION(NDIM)                         :: htot
-     CHARACTER(STRMAX)                                 :: inparfile, tempmtiny
+     CHARACTER(STRMAX)                                 :: inparfile
      TYPE(swifter_pl), POINTER                         :: swifter_pl1P
      TYPE(swifter_tp), POINTER                         :: swifter_tp1P
      TYPE(symba_pl), DIMENSION(:), ALLOCATABLE, TARGET :: symba_plA
@@ -86,10 +86,8 @@ PROGRAM swifter_symba
 
 ! Executable code
      CALL util_version
-     !WRITE(*, 100, ADVANCE = "NO") "Enter name of parameter data file: "
-     !READ(*, 100) inparfile
-     CALL getarg(1,inparfile)       !A.S.
-
+     WRITE(*, 100, ADVANCE = "NO") "Enter name of parameter data file: "
+     READ(*, 100) inparfile
  100 FORMAT(A)
      inparfile = TRIM(ADJUSTL(inparfile))
      CALL io_init_param(inparfile, nplmax, ntpmax, t0, tstop, dt, inplfile, intpfile, in_type, istep_out, outfile, out_type,      &
@@ -109,11 +107,9 @@ PROGRAM swifter_symba
      END IF
      CALL symba_setup(npl, ntp, symba_plA, symba_tpA, symba_pl1P, symba_tp1P, swifter_pl1P, swifter_tp1P)
      CALL io_init_pl(inplfile, in_type, lclose, lrhill_present, npl, swifter_pl1P)
-     !WRITE(*, 100, ADVANCE = "NO") "Enter the smallest mass to self-gravitate: "
-     !READ(*, *) mtiny
-     CALL getarg(2,tempmtiny)           !A.S.
-     READ (tempmtiny, *) mtiny        !A.S.
-CALL symba_reorder_pl(npl, symba_pl1P)
+     WRITE(*, 100, ADVANCE = "NO") "Enter the smallest mass to self-gravitate: "
+     READ(*, *) mtiny
+     CALL symba_reorder_pl(npl, symba_pl1P)
      CALL io_init_tp(intpfile, in_type, ntp, swifter_tp1P)
      CALL util_valid(npl, ntp, swifter_pl1P, swifter_tp1P)
      lfirst = .TRUE.

@@ -27,24 +27,47 @@ def get_mass(mass_file, tp):
         i += n_skip
     return m
 
-def get_energy(cube, m, iteration, N_bods):
+def get_com(cube, m, iteration, N_bods):
+    com = np.zeros(7) #m,x,y,z,vx,vy,vz
+    com[0] += m[0]
+    for i in xrange(0,N_bods):
+        com[1] += m[i+1]*cube[i][iteration][2] #x
+        com[2] += m[i+1]*cube[i][iteration][3] #y
+        com[3] += m[i+1]*cube[i][iteration][4] #z
+        com[4] += m[i+1]*cube[i][iteration][5] #vx
+        com[5] += m[i+1]*cube[i][iteration][6] #vy
+        com[6] += m[i+1]*cube[i][iteration][7] #vz
+        com[0] += m[i+1]
+    if com[0] > 0:
+        com[1] /= com[0]
+        com[2] /= com[0]
+        com[3] /= com[0]
+        com[4] /= com[0]
+        com[5] /= com[0]
+        com[6] /= com[0]
+    return com
+
+def get_energy(cube, m, com, iteration, N_bods):
     K = 0
     U = 0
     G = 1   #G=1 units
+    K += 0.5*m[0]*(com[4]*com[4] + com[5]*com[5] + com[6]*com[6])   #sun non-zero in COM frame
     for i in xrange(0,N_bods):
         dx = cube[i][iteration][2]
         dy = cube[i][iteration][3]
         dz = cube[i][iteration][4]
+        dvx = cube[i][iteration][5] - com[4]
+        dvy = cube[i][iteration][6] - com[5]
+        dvz = cube[i][iteration][7] - com[6]
         r = (dx*dx + dy*dy + dz*dz)**0.5
-        U -= G*m[0]*m[i+1]/r          #U_sun/massive body
-        v2 = cube[i][iteration][5]**2 + cube[i][iteration][6]**2 + cube[i][iteration][7]**2
-        K += 0.5*m[i+1]*v2          #KE body
+        U -= G*m[0]*m[i+1]/r                                        #U_sun/massive body
+        K += 0.5*m[i+1]*(dvx*dvx + dvy*dvy + dvz*dvz)               #KE body
         for j in xrange(i+1,N_bods):
             ddx = dx - cube[j][iteration][2]
             ddy = dy - cube[j][iteration][3]
             ddz = dz - cube[j][iteration][4]
             r = (ddx*ddx + ddy*ddy + ddz*ddz)**0.5
-            U -= G*m[i+1]*m[j+1]/r    #U between bodies
+            U -= G*m[i+1]*m[j+1]/r                                  #U between bodies
     return U + K
 
 def natural_key(string_):
@@ -76,9 +99,11 @@ m = np.concatenate([mp,mtp])    #0th slot is sun's mass!!
 #calc E of system at time 0
 dE = np.zeros(N_output)
 time = np.zeros(N_output)
-E0 = get_energy(cube,m,0,N_bods)
+com = get_com(cube,m,0,N_bods)
+E0 = get_energy(cube,m,com,0,N_bods)
 for i in xrange(0,N_output):
-    E = get_energy(cube,m,i,N_bods)
+    com = get_com(cube,m,i,N_bods)
+    E = get_energy(cube,m,com,i,N_bods)
     dE[i] = np.fabs((E - E0)/E0)
     time[i] = cube[0][i][0]
 
