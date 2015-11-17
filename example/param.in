@@ -5,8 +5,9 @@
 !NTPMAX         -1                 ! not used
 !DT             365.25E0            ! stepsize is 1 year
 T0             0.0E0
-TSTOP          3.6525E4            ! simulation length is 100,000 yrs
-DT             1.0E0
+!TSTOP          5.8092E6            ! simulation length is 100,000 yrs
+TSTOP          5.8092E4
+DT             0.12E0
 PL_IN          swifter_pl.in
 !TP_IN          tp.in
 IN_TYPE        ASCII

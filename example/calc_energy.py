@@ -12,10 +12,13 @@ def get_mass(mass_file, tp):
     fos = open(mass_file,'r')
     lines = fos.readlines()
     n_lines = len(lines)
-    n_skip = 3
-    i=1
     m=np.zeros(0)
+    temp = lines[1]     #get suns mass
+    split = temp.split(" ") #get suns mass
+    m0 = float(split[2])   #get suns mass
     junk = "\n"
+    n_skip = 4
+    i=4
     while i < n_lines:
         temp = lines[i]
         split = temp.split(" ")
@@ -25,19 +28,20 @@ def get_mass(mass_file, tp):
         else:
             m=np.append(m,float(split[2]))
         i += n_skip
-    return m
+    return m, m0
 
-def get_com(cube, m, iteration, N_bods):
+def get_com(cube, m, m0, iteration, N_bods):
     com = np.zeros(7) #m,x,y,z,vx,vy,vz
-    com[0] += m[0]
+    com[0] += m0
     for i in xrange(0,N_bods):
-        com[1] += m[i+1]*cube[i][iteration][2] #x
-        com[2] += m[i+1]*cube[i][iteration][3] #y
-        com[3] += m[i+1]*cube[i][iteration][4] #z
-        com[4] += m[i+1]*cube[i][iteration][5] #vx
-        com[5] += m[i+1]*cube[i][iteration][6] #vy
-        com[6] += m[i+1]*cube[i][iteration][7] #vz
-        com[0] += m[i+1]
+        if m[i] > m[-1]:
+            com[1] += m[i]*cube[i][iteration][2] #x
+            com[2] += m[i]*cube[i][iteration][3] #y
+            com[3] += m[i]*cube[i][iteration][4] #z
+            com[4] += m[i]*cube[i][iteration][5] #vx
+            com[5] += m[i]*cube[i][iteration][6] #vy
+            com[6] += m[i]*cube[i][iteration][7] #vz
+            com[0] += m[i]
     if com[0] > 0:
         com[1] /= com[0]
         com[2] /= com[0]
@@ -47,11 +51,11 @@ def get_com(cube, m, iteration, N_bods):
         com[6] /= com[0]
     return com
 
-def get_energy(cube, m, com, iteration, N_bods):
+def get_energy(cube, m, m0, com, iteration, N_bods):
     K = 0
     U = 0
     G = 1   #G=1 units
-    K += 0.5*m[0]*(com[4]*com[4] + com[5]*com[5] + com[6]*com[6])   #sun non-zero in COM frame
+    K += 0.5*m0*(com[4]*com[4] + com[5]*com[5] + com[6]*com[6])   #sun non-zero in COM frame
     for i in xrange(0,N_bods):
         dx = cube[i][iteration][2]
         dy = cube[i][iteration][3]
@@ -60,52 +64,59 @@ def get_energy(cube, m, com, iteration, N_bods):
         dvy = cube[i][iteration][6] - com[5]
         dvz = cube[i][iteration][7] - com[6]
         r = (dx*dx + dy*dy + dz*dz)**0.5
-        U -= G*m[0]*m[i+1]/r                                        #U_sun/massive body
-        K += 0.5*m[i+1]*(dvx*dvx + dvy*dvy + dvz*dvz)               #KE body
-        for j in xrange(i+1,N_bods):
-            ddx = dx - cube[j][iteration][2]
-            ddy = dy - cube[j][iteration][3]
-            ddz = dz - cube[j][iteration][4]
-            r = (ddx*ddx + ddy*ddy + ddz*ddz)**0.5
-            U -= G*m[i+1]*m[j+1]/r                                  #U between bodies
+        U -= G*m0*m[i]/r                                        #U_sun/massive body
+        K += 0.5*m[i]*(dvx*dvx + dvy*dvy + dvz*dvz)               #KE body
+        if m[i] > m[-1]:    #ignore forces between planetesimals
+            for j in xrange(i+1,N_bods):
+                ddx = dx - cube[j][iteration][2]
+                ddy = dy - cube[j][iteration][3]
+                ddz = dz - cube[j][iteration][4]
+                r = (ddx*ddx + ddy*ddy + ddz*ddz)**0.5
+                U -= G*m[i]*m[j]/r  #U between bodies
     return U + K
 
 def natural_key(string_):
     return [int(s) if s.isdigit() else s for s in re.split(r'(\d+)', string_)]
 
 dir = sys.argv[1]
-files = glob.glob(dir+'*.txt')
+massdir = sys.argv[2]    #location of where masses are stored
+files = glob.glob(dir+'follow*.txt')
 files = sorted(files, key=natural_key)
 N_bodies = len(files)
 
-#file 0 is the sun which is empty
-cube=np.genfromtxt(files[1],delimiter='  ',dtype=float)
+#read in data for each body
+print 'get data cube'
+cube=np.genfromtxt(files[1],delimiter='  ',dtype=float) #file 0 is the sun which is empty
 nr, nc = cube.shape
 cube = np.reshape(cube, (1,nr,nc))
-
-#read in data for each body
 for i in xrange(2,N_bodies):
-    data=np.genfromtxt(files[i],delimiter='  ',dtype=float)
+    data=np.genfromtxt(files[i],delimiter=None,dtype=float)
     data = np.reshape(data, (1,nr,nc))
     cube = np.concatenate((cube,data),axis=0)
 
 N_bods,N_output,N_cols = cube.shape
 
 #get masses of each body
-mp = get_mass("pl.in",0)
-mtp = get_mass("tp.in",1)
-m = np.concatenate([mp,mtp])    #0th slot is sun's mass!!
+print 'get masses'
+m, m0 = get_mass(massdir,0)
+#mtp = get_mass("tp.in",1)
+#m = np.concatenate([mp,mtp])    #0th slot is sun's mass!!
 
 #calc E of system at time 0
 dE = np.zeros(N_output)
 time = np.zeros(N_output)
-com = get_com(cube,m,0,N_bods)
-E0 = get_energy(cube,m,com,0,N_bods)
+com = get_com(cube,m,m0,0,N_bods)
+E0 = get_energy(cube,m,m0,com,0,N_bods)
+print 'calculating energy'
+increment = 0.1*N_output
 for i in xrange(0,N_output):
-    com = get_com(cube,m,i,N_bods)
-    E = get_energy(cube,m,com,i,N_bods)
+    com = get_com(cube,m,m0,i,N_bods)
+    E = get_energy(cube,m,m0,com,i,N_bods)
     dE[i] = np.fabs((E - E0)/E0)
     time[i] = cube[0][i][0]
+    if i > increment:
+        print '% done =',round(100*float(i)/float(N_output))
+        increment += 0.1*N_output
 
 plt.plot(time, dE, 'o')
 plt.yscale('log')

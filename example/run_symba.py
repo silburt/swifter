@@ -1,17 +1,14 @@
 #A.S. Run symba but also keep time.
-#from subprocess import call
-import os
+from subprocess import call
 import time
 
 #clean existing stuff
-#call("rm *.dat *.bin", shell=True)
-os.system("rm *.dat *.bin")
+call("rm *.dat *.bin *.out", shell=True)
 
 start_time = time.time()
 
-os.system("./swifter_symba param.in 0.005")
-#args = ["./swifter_symba", "param.in", "0.005"]
-#call(args)
+args = ["./swifter_symba", "param.in", "1.0E-7"]
+call(args)
 
 elapsed_time = time.time() - start_time
 print 'elapsed time =',elapsed_time
