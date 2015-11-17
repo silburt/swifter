@@ -7,7 +7,12 @@ call("rm *.dat *.bin *.out", shell=True)
 
 start_time = time.time()
 
-args = ["./swifter_symba", "param.in", "1.0E-7"]
+default_mtiny = "1e-7"
+mtiny = raw_input("Enter Mtiny value (default, Msun=1, mtiny=1e-7): ")
+if not mtiny:
+    mtiny = default_mtiny
+
+args = ["./swifter_symba", "param.in", mtiny]
 call(args)
 
 elapsed_time = time.time() - start_time

@@ -6,12 +6,12 @@
 !DT             365.25E0            ! stepsize is 1 year
 T0             0.0E0
 !TSTOP          5.8092E6            ! simulation length is 100,000 yrs
-TSTOP          5.8092E6
-DT             0.1E-1
+TSTOP          5.8092E7
+DT             1000E0
 PL_IN          pl.in
 !TP_IN          tp.in
 IN_TYPE        ASCII
-ISTEP_OUT      10000               ! output every 10K years
+ISTEP_OUT      1000               ! output every 10K years
 BIN_OUT        out.dat
 OUT_TYPE       REAL8               !
 OUT_FORM       XV                  ! osculating element output

@@ -34,15 +34,15 @@ def h2b(cube, m, iteration, N_bodies):  #heliocentric to barycentric
     com = np.zeros(7) #m,x,y,z,vx,vy,vz
     com[0] += m[0]
     for i in xrange(1,N_bodies):
-        if m[i] >= m[-1]:
-            com[1] += m[i]*cube[i-1][iteration][2] #x
-            com[2] += m[i]*cube[i-1][iteration][3] #y
-            com[3] += m[i]*cube[i-1][iteration][4] #z
-            com[4] += m[i]*cube[i-1][iteration][5] #vx
-            com[5] += m[i]*cube[i-1][iteration][6] #vy
-            com[6] += m[i]*cube[i-1][iteration][7] #vz
-            #print m[i], cube[i][iteration][2], cube[i][iteration][3], cube[i][iteration][4]
-            com[0] += m[i]
+        #if m[i] > m[-1]:
+        com[1] += m[i]*cube[i-1][iteration][2] #x
+        com[2] += m[i]*cube[i-1][iteration][3] #y
+        com[3] += m[i]*cube[i-1][iteration][4] #z
+        com[4] += m[i]*cube[i-1][iteration][5] #vx
+        com[5] += m[i]*cube[i-1][iteration][6] #vy
+        com[6] += m[i]*cube[i-1][iteration][7] #vz
+        #print m[i], cube[i][iteration][2], cube[i][iteration][3], cube[i][iteration][4]
+        com[0] += m[i]
     x = np.zeros(N_bodies)
     y = np.zeros(N_bodies)
     z = np.zeros(N_bodies)
