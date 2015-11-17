@@ -158,7 +158,7 @@ CALL symba_reorder_pl(npl, symba_pl1P)
           END IF
           IF (istep_out > 0) THEN
                iout = iout - 1
-               IF (iout == 0) THEN
+               IF (iout == 0) THEN  !A.S. Here is where the output happens I think every ISTEP_OUT (or iout)
                     CALL io_write_frame(t, npl, ntp, swifter_pl1P, swifter_tp1P, outfile, out_type, out_form, out_stat)
                     iout = istep_out
                END IF
