@@ -188,6 +188,11 @@ SUBROUTINE symba_merge_pl(t, dt, index, nplplenc, plplenc_list, nmergeadd, nmerg
           eold = eold - m1*m2/SQRT(DOT_PRODUCT(xr(:), xr(:)))
           enew = 0.5_DP*mtot*DOT_PRODUCT(vnew(:), vnew(:))
           eoffset = eoffset + eold - enew
+        !A.S.
+        !open (unit=20,file="energyoffset.txt",action="write",status="replace")
+        !write (20,*) t, id2, eoffset
+        !A.S.
+        WRITE(*, *) "Energy offset ", eoffset, " at time t = ",t
           DO k = 1, nplplenc
                IF (plplenc_list(k)%status == ACTIVE) THEN
                     symba_pliP => plplenc_list(index)%pl1P%parentP

@@ -3,14 +3,14 @@ from subprocess import call
 import time
 
 #clean existing stuff
-call("rm *.dat *.bin *.out", shell=True)
+call("rm *.dat *.bin *.out *.txt", shell=True)
 
-start_time = time.time()
-
-default_mtiny = "1e-7"
-mtiny = raw_input("Enter Mtiny value (default, Msun=1, mtiny=1e-7): ")
+default_mtiny = "1E-11"
+mtiny = raw_input("Enter Mtiny value (default, Msun=1, mtiny=1E-11): ")
 if not mtiny:
     mtiny = default_mtiny
+
+start_time = time.time()
 
 args = ["./swifter_symba", "param.in", mtiny]
 call(args)

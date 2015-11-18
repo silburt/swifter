@@ -146,6 +146,9 @@ c..   Remove any encounters with ip2
      &           vxh,vyh,vzh,ke,pot,energy2,eltot)
 
       eoff = eoff + energy1 - energy2
+    !A.S.
+     open (unit=20,file="energyoffset.txt",action="write",status="replace")
+     write (20,*) "Energy offset is",eoff
 
       call io_discard_merge(time,ip1,ip2,m1,r1,x1,y1,z1,vx1,vy1,
      &     vz1,m2,r2,x2,y2,z2,vx2,vy2,vz2,

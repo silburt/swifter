@@ -68,7 +68,7 @@ PROGRAM swifter_symba
      CHARACTER(STRMAX) :: out_stat       ! Open status for output binary file
 
 ! Internals
-     LOGICAL(LGT)                                      :: lfirst
+     LOGICAL(LGT)                                      :: lfirst, fileexist
      INTEGER(I4B)                                      :: npl, ntp, ntp0, nsppl, nsptp, iout, idump, iloop
      INTEGER(I4B)                                      :: nplplenc, npltpenc, nmergeadd, nmergesub
      REAL(DP)                                          :: t, tfrac, tbase, mtiny, ke, pe, te, eoffset
@@ -130,6 +130,16 @@ CALL symba_reorder_pl(npl, symba_pl1P)
      eoffset = 0.0_DP
      NULLIFY(symba_pld1P, symba_tpd1P)
      IF (istep_out > 0) CALL io_write_frame(t, npl, ntp, swifter_pl1P, swifter_tp1P, outfile, out_type, out_form, out_stat)
+     !A.S. output initial energy
+     call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
+     inquire(file="energyoutput.txt", exist=fileexist)
+     if (fileexist) then
+        open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
+     else
+        open (unit=20,file="energyoutput.txt",status="new",action="write")
+     end if
+     write (20,*) t, te + eoffset
+     !A.S. output initial energy
      WRITE(*, *) " *************** MAIN LOOP *************** "
      DO WHILE ((t < tstop) .AND. ((ntp0 == 0) .OR. (ntp > 0)))
           CALL symba_step(lfirst, lextra_force, lclose, t, npl, nplmax, ntp, ntpmax, symba_pl1P, symba_tp1P, j2rp2, j4rp4, dt,    &
@@ -172,6 +182,11 @@ CALL symba_reorder_pl(npl, symba_pl1P)
                     CALL io_dump_param(nplmax, ntpmax, ntp, t, tstop, dt, in_type, istep_out, outfile, out_type, out_form,        &
                          istep_dump, j2rp2, j4rp4, lclose, rmin, rmax, rmaxu, qmin, qmin_coord, qmin_alo, qmin_ahi,               &
                          encounter_file, lextra_force, lbig_discard, lrhill_present)
+                    !A.S. output energy
+                    call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
+                    open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
+                    write (20,*) t, te, eoffset
+                    !A.S. output energy
                     CALL io_dump_pl(npl, swifter_pl1P, lclose, lrhill_present)
                     IF (ntp > 0) CALL io_dump_tp(ntp, swifter_tp1P)
                     idump = istep_dump
