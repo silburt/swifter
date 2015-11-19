@@ -1,3 +1,4 @@
 example/output/*
 example/*.bin
 example/*.dat
+example/output/*

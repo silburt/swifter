@@ -117,11 +117,6 @@ try:
 except:
     energy_prototype = 1
 
-#energy offset
-f = open(dir+'energyoffset.txt')
-Eoff=f.readlines()
-Eoff=float(Eoff[0])
-
 #read in data for each body
 print 'get data cube'
 cube=np.genfromtxt(files[energy_prototype],delimiter='  ',dtype=float) #file 0 is the sun which is empty
@@ -153,15 +148,11 @@ m = get_mass(massdir,0)
 #calc E of system at time 0
 dE = np.zeros(N_output)
 time = np.zeros(N_output)
-#com = get_com(cube,m,m0,0,N_bods)
 x,y,z,vx,vy,vz = h2b(cube,m,0,N_bodies)
 E0 = cal_energy(m,x,y,z,vx,vy,vz,N_bodies)
-#E0 = get_energy(cube,m,m0,com,0,N_bods)
 print 'calculating energy'
 increment = 0.1*N_output
 for i in xrange(1,N_output):
-    #com = get_com(cube,m,m0,i,N_bods)
-    #E = get_energy(cube,m,m0,com,i,N_bods)
     x,y,z,vx,vy,vz = h2b(cube,m,i,N_bodies)
     E = cal_energy(m,x,y,z,vx,vy,vz,N_bodies)
     dE[i] = np.fabs((E - E0)/E0)
@@ -173,6 +164,6 @@ for i in xrange(1,N_output):
 plt.plot(time, dE, 'o')
 plt.yscale('log')
 plt.xscale('log')
-plt.savefig(dir+'Energy.png')
+plt.savefig(dir+'Energy_pycalc.png')
 plt.show()
 

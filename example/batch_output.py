@@ -2,7 +2,7 @@
 
 from subprocess import call
 
-unpack = raw_input("unpack out.bin? (yes=1, no = 0): ")
+unpack = raw_input("unpack out.bin and move to output/ folder? (yes = 1, no = 0): ")
 if int(unpack) == 1:
     N = raw_input("Number of bodies to track: ")
     N = int(N)

@@ -7,11 +7,21 @@ pi = math.pi
 from mpl_toolkits.mplot3d import Axes3D
 import re
 
+def get_color(id,N_massive):
+    color = 'black'
+    if id == 0:
+        color = 'yellow'
+    elif id < N_massive+1:
+        color = 'red'
+    return color
+
 def natural_key(string_):
     return [int(s) if s.isdigit() else s for s in re.split(r'(\d+)', string_)]
 
+N_massive = int(raw_input("Number of massive bodies (including sun): "))
+
 dir = sys.argv[1]
-outputdir = 'movie_output/'
+outputdir = 'output_movie/'
 files = glob.glob(dir+'follow*.txt')
 files = sorted(files, key=natural_key)
 N_bodies = len(files)
@@ -42,20 +52,27 @@ for i in xrange(1,N_bodies):
     cube = np.concatenate((cube,data),axis=0)
 
 #colors - need to improve this later for any number of active/passive bodies
-colors =  ["black" for x in range(N_bodies)]
-colors[0] = 'orange'
-colors[1] = 'red'
+#colors =  ["black" for x in range(N_bodies)]
 
+#limits for plots = (x,y,z/2)
+limit = 15
+
+#output movie
 for i in xrange(0,nr):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(0,0,0,c='yellow', lw=0)  #sun
     for j in xrange(0,N_bodies-1):
-        ax.scatter(cube[j][i][2],cube[j][i][3],cube[j][i][4],c=colors[j], lw=0)
-    ax.set_xlim([-2,2])
-    ax.set_ylim([-2,2])
-    ax.set_zlim([-1,1])
+        color = get_color(cube[j][i][1],N_massive)
+        ax.scatter(cube[j][i][2],cube[j][i][3],cube[j][i][4],c=color, lw=0)
+    ax.set_xlim([-limit,limit])
+    ax.set_ylim([-limit,limit])
+    ax.set_zlim([-limit/4,limit/4])
+    ax.view_init(elev = 90, azim=100)    #both are in degrees. elev = 0 or 90 is what you want
     output = 't='+str(cube[0][i][0])
     ax.set_title(output)
-    plt.savefig(dir+'movie_output'+str(i)+'.png')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    plt.savefig(outputdir+'movie_output'+str(i)+'.png')
     print 'completed iteration',i
