@@ -170,6 +170,11 @@ CALL symba_reorder_pl(npl, symba_pl1P)
                iout = iout - 1
                IF (iout == 0) THEN  !A.S. Here is where the output happens I think every ISTEP_OUT (or iout)
                     CALL io_write_frame(t, npl, ntp, swifter_pl1P, swifter_tp1P, outfile, out_type, out_form, out_stat)
+                    !A.S. output energy
+                    call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
+                    open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
+                    write (20,*) t, te, eoffset
+                    !A.S. output energy
                     iout = istep_out
                END IF
           END IF
@@ -182,11 +187,6 @@ CALL symba_reorder_pl(npl, symba_pl1P)
                     CALL io_dump_param(nplmax, ntpmax, ntp, t, tstop, dt, in_type, istep_out, outfile, out_type, out_form,        &
                          istep_dump, j2rp2, j4rp4, lclose, rmin, rmax, rmaxu, qmin, qmin_coord, qmin_alo, qmin_ahi,               &
                          encounter_file, lextra_force, lbig_discard, lrhill_present)
-                    !A.S. output energy
-                    call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
-                    open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
-                    write (20,*) t, te, eoffset
-                    !A.S. output energy
                     CALL io_dump_pl(npl, swifter_pl1P, lclose, lrhill_present)
                     IF (ntp > 0) CALL io_dump_tp(ntp, swifter_tp1P)
                     idump = istep_dump

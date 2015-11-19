@@ -12,6 +12,7 @@ dir = sys.argv[1]
 f = open(dir+'energyoutput.txt')
 lines=list(f)
 N = len(lines)
+print N
 dE = np.zeros(N)
 t = np.zeros(N)
 temp = lines[0]

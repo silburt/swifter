@@ -5,8 +5,8 @@ import time
 #clean existing stuff
 call("rm *.dat *.bin *.out *.txt", shell=True)
 
-default_mtiny = "1E-11"
-mtiny = raw_input("Enter Mtiny value (default, Msun=1, mtiny=1E-11): ")
+default_mtiny = "1E-07"
+mtiny = raw_input("Enter Mtiny value (default, Msun=1, mtiny=1E-07): ")
 if not mtiny:
     mtiny = default_mtiny
 
