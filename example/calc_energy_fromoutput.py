@@ -146,28 +146,3 @@ plt.yscale('log')
 plt.xscale('log')
 plt.savefig(dir+'Energy_fromoutput.png')
 plt.show()
-
-
-#def get_energy(cube, m, m0, com, iteration, N_bods):
-#    K = 0
-#    U = 0
-#    G = 1   #G=1 units
-#    K += 0.5*m0*(com[4]*com[4] + com[5]*com[5] + com[6]*com[6])   #sun non-zero in COM frame
-#    for i in xrange(0,N_bods):
-#        dx = cube[i][iteration][2] - com[1]
-#        dy = cube[i][iteration][3] - com[2]
-#        dz = cube[i][iteration][4] - com[3]
-#        dvx = cube[i][iteration][5] - com[4]
-#        dvy = cube[i][iteration][6] - com[5]
-#        dvz = cube[i][iteration][7] - com[6]
-#        r = (dx*dx + dy*dy + dz*dz)**0.5
-#        U -= G*m0*m[i]/r                                        #U_sun/massive body
-#        K += 0.5*m[i]*(dvx*dvx + dvy*dvy + dvz*dvz)               #KE body
-#        if m[i] > m[-1]:    #ignore forces between planetesimals
-#            for j in xrange(i+1,N_bods):
-#                ddx = dx - (cube[j][iteration][2] - com[1])
-#                ddy = dy - (cube[j][iteration][3] - com[2])
-#                ddz = dz - (cube[j][iteration][4] - com[3])
-#                r = (ddx*ddx + ddy*ddy + ddz*ddz)**0.5
-#                U -= G*m[i]*m[j]/r  #U between bodies
-#    return U + K
