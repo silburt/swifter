@@ -11,20 +11,20 @@ def get_color(id,N_massive):
     color = 'black'
     if id == 0:
         color = 'yellow'
-    elif id < N_massive+1:
+    elif id <= N_massive:
         color = 'red'
     return color
 
 def natural_key(string_):
     return [int(s) if s.isdigit() else s for s in re.split(r'(\d+)', string_)]
 
-N_massive = int(raw_input("Number of massive bodies (including sun): "))
-
 dir = sys.argv[1]
 outputdir = 'output_movie/'
 files = glob.glob(dir+'follow*.txt')
 files = sorted(files, key=natural_key)
 N_bodies = len(files)
+
+N_massive = int(raw_input("Number of massive bodies (including sun): "))
 
 try:
     movie_prototype = int(sys.argv[2])
@@ -55,7 +55,7 @@ for i in xrange(1,N_bodies):
 #colors =  ["black" for x in range(N_bodies)]
 
 #limits for plots = (x,y,z/2)
-limit = 15
+limit = 20
 
 #output movie
 for i in xrange(0,nr):
@@ -75,4 +75,4 @@ for i in xrange(0,nr):
     ax.set_ylabel('y')
     ax.set_zlabel('z')
     plt.savefig(outputdir+'movie_output'+str(i)+'.png')
-    print 'completed iteration',i
+    print 'completed iteration '+str(i)+' of '+str(nr)

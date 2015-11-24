@@ -1,6 +1,4 @@
-#A.S. Program to call tool_follow and output all the planet/particle data and put it into follow/
-#Symba only uses massless particles, and so there is no particle-particle interactions!!
-#Python note: genfromtxt only makes a 2D array if all the elements are of the same type. Otherwise what I get is called a "structured ndarray". Makes it hard to concatenate and stuff, though it can still work with np.dstack.
+#A.S. This just reads in the symba calculated energies and plots it.
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,7 +10,6 @@ dir = sys.argv[1]
 f = open(dir+'energyoutput.txt')
 lines=list(f)
 N = len(lines)
-print N
 dE = np.zeros(N)
 t = np.zeros(N)
 temp = lines[0]
