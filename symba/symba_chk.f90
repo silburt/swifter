@@ -51,7 +51,7 @@ SUBROUTINE symba_chk(xr, vr, rhill1, rhill2, dt, irec, lencounter, lvdotr)
 
 ! Executable code
      lencounter = .FALSE.
-     rcrit = (rhill1 + rhill2)*RHSCALE*(RSHELL**(irec))
+     rcrit = (rhill1 + rhill2)*RHSCALE*(RSHELL**(irec))     !A.S. Crucial line - determines collision
      r2crit = rcrit*rcrit
      CALL rmvs_chk_ind(xr(:), vr(:), dt, r2crit, iflag)
      IF (iflag /= 0) lencounter = .TRUE.

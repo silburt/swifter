@@ -107,7 +107,7 @@ RECURSIVE SUBROUTINE symba_step_recur(lclose, t, ireci, npl, nplm, ntp, symba_pl
                     xr(:) = swifter_pljP%xh(:) - swifter_pliP%xh(:)
                     vr(:) = swifter_pljP%vb(:) - swifter_pliP%vb(:)
                     CALL symba_chk(xr(:), vr(:), swifter_pliP%rhill, swifter_pljP%rhill, dtl, irecp, lencounter,                  &
-                         plplenc_list(i)%lvdotr)
+                         plplenc_list(i)%lvdotr)    !A.S. chk for p-p encounter rcrit = (rhill1 + rhill2)*RHSCALE*(RSHELL**(irec))
                     IF (lencounter) THEN
                          icflg = 1
                          symba_pliP%levelg = irecp
@@ -126,7 +126,7 @@ RECURSIVE SUBROUTINE symba_step_recur(lclose, t, ireci, npl, nplm, ntp, symba_pl
                     swifter_tpP => symba_tpP%helio%swifter
                     xr(:) = swifter_tpP%xh(:) - swifter_pliP%xh(:)
                     vr(:) = swifter_tpP%vb(:) - swifter_pliP%vb(:)
-                    CALL symba_chk(xr(:), vr(:), swifter_pliP%rhill, 0.0_DP, dtl, irecp, lencounter, pltpenc_list(i)%lvdotr)
+                    CALL symba_chk(xr(:), vr(:), swifter_pliP%rhill, 0.0_DP, dtl, irecp, lencounter, pltpenc_list(i)%lvdotr)    !A.S. chk for p-tp encounter rcrit = (rhill1 + rhill2)*RHSCALE*(RSHELL**(irec))
                     IF (lencounter) THEN
                          icflg = 1
                          symba_pliP%levelg = irecp
@@ -143,23 +143,23 @@ RECURSIVE SUBROUTINE symba_step_recur(lclose, t, ireci, npl, nplm, ntp, symba_pl
           CALL symba_helio_drift(ireci, npl, symba_pl1P, dtl)
           IF (ntp > 0) CALL symba_helio_drift_tp(ireci, ntp, symba_tp1P, symba_pl1P%helio%swifter%mass, dtl)
           IF (lencounter) CALL symba_step_recur(lclose, t, irecp, npl, nplm, ntp, symba_pl1P, symba_tp1P, dt0, eoffset, nplplenc, &
-               npltpenc, plplenc_list, pltpenc_list, nmergeadd, nmergesub, mergeadd_list, mergesub_list, encounter_file, out_type)
+               npltpenc, plplenc_list, pltpenc_list, nmergeadd, nmergesub, mergeadd_list, mergesub_list, encounter_file, out_type)  !A.S. find proper recursion level where collision takes place.
           sgn = 1.0_DP
           CALL symba_kick(irecp, nplplenc, npltpenc, plplenc_list, pltpenc_list, dth, sgn)
           IF (lclose) THEN
                vbs(:) = symba_pl1P%helio%swifter%vb(:)
-               DO i = 1, nplplenc
+               DO i = 1, nplplenc   !A.S. # of planet-planet encounters
                     IF ((plplenc_list(i)%status == ACTIVE) .AND.                                                                  &
                         (plplenc_list(i)%pl1P%levelg >= ireci) .AND.                                                              &
                         (plplenc_list(i)%pl2P%levelg >= ireci))                                                                   &
                          CALL symba_merge_pl(t, dtl, i, nplplenc, plplenc_list, nmergeadd, nmergesub, mergeadd_list,              &
-                              mergesub_list, eoffset, vbs, encounter_file, out_type)
+                              mergesub_list, eoffset, vbs, encounter_file, out_type)    !A.S. Merge!
                END DO
-               DO i = 1, npltpenc
+               DO i = 1, npltpenc   !A.S. # of planet-test particle encounters
                     IF ((pltpenc_list(i)%status == ACTIVE) .AND.                                                                  &
                         (pltpenc_list(i)%plP%levelg >= ireci) .AND.                                                               &
                         (pltpenc_list(i)%tpP%levelg >= ireci))                                                                    &
-                         CALL symba_merge_tp(t, dtl, i, npltpenc, pltpenc_list, vbs, encounter_file, out_type)
+                         CALL symba_merge_tp(t, dtl, i, npltpenc, pltpenc_list, vbs, encounter_file, out_type)  !A.S. Merge!
                END DO
           END IF
           DO i = 1, nplplenc

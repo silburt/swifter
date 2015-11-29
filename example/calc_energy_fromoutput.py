@@ -82,7 +82,7 @@ def natural_key(string_):
     return [int(s) if s.isdigit() else s for s in re.split(r'(\d+)', string_)]
 
 dir = sys.argv[1]
-massdir = sys.argv[2]    #location of where masses are stored
+massdir = 'swifter_pl.in'    #location of where masses are stored
 files = glob.glob(dir+'follow*.txt')
 files = sorted(files, key=natural_key)
 N_bodies = len(files)

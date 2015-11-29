@@ -24,7 +24,7 @@ files = glob.glob(dir+'follow*.txt')
 files = sorted(files, key=natural_key)
 N_bodies = len(files)
 
-N_massive = int(raw_input("Number of massive bodies (including sun): "))
+N_massive = int(raw_input("Number of **massive** bodies (including sun): "))
 
 try:
     movie_prototype = int(sys.argv[2])
@@ -51,11 +51,11 @@ for i in xrange(1,N_bodies):
         exit(0)
     cube = np.concatenate((cube,data),axis=0)
 
-#colors - need to improve this later for any number of active/passive bodies
-#colors =  ["black" for x in range(N_bodies)]
-
 #limits for plots = (x,y,z/2)
 limit = 20
+
+print 'deleting any existing .png images in output_movie folder'
+call("rm output_movie/*.png",shell=True)
 
 #output movie
 for i in xrange(0,nr):

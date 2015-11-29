@@ -31,8 +31,8 @@ MODULE module_symba
 
      INTEGER(I4B), PARAMETER :: NENMAX = 32767
      INTEGER(I4B), PARAMETER :: NTENC = 3
-     REAL(DP), PARAMETER     :: RHSCALE = 6.5_DP
-     REAL(DP), PARAMETER     :: RSHELL = 0.48075_DP
+     REAL(DP), PARAMETER     :: RHSCALE = 6.5_DP    !A.S. scale factor for hill sphere to take shorter time step
+     REAL(DP), PARAMETER     :: RSHELL = 0.48075_DP !A.S. Ratio of shell radii squared
 
      TYPE symba_pl
           LOGICAL(LGT)            :: lmerged ! flag indicating whether body has merged with another this time step

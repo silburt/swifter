@@ -170,8 +170,8 @@ CALL symba_reorder_pl(npl, symba_pl1P)
                iout = iout - 1
                IF (iout == 0) THEN  !A.S. Here is where the output happens I think every ISTEP_OUT (or iout)
                     CALL io_write_frame(t, npl, ntp, swifter_pl1P, swifter_tp1P, outfile, out_type, out_form, out_stat)
-                    !A.S. output energy
                     call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
+                    !A.S. output energy
                     open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
                     write (20,*) t, te, eoffset
                     !A.S. output energy

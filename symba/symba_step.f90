@@ -136,7 +136,7 @@ SUBROUTINE symba_step(lfirst, lextra_force, lclose, t, npl, nplmax, ntp, ntpmax,
                vr(:) = swifter_pljP%vh(:) - swifter_pliP%vh(:)
                CALL symba_chk(xr(:), vr(:), swifter_pliP%rhill, swifter_pljP%rhill, dt, irec, lencounter, lvdotr)
                IF (lencounter) THEN
-                    nplplenc = nplplenc + 1
+                    nplplenc = nplplenc + 1     !A.S. important - this is where number planetary encounters is actually incremented, based on symba_chk, i.e. rcrit = (rhill1 + rhill2)*RHSCALE*(RSHELL**(irec))
                     IF (nplplenc > NENMAX) THEN
                          WRITE(*, *) "SWIFTER Error:"
                          WRITE(*, *) "   PL-PL encounter list is full."
@@ -197,7 +197,7 @@ SUBROUTINE symba_step(lfirst, lextra_force, lclose, t, npl, nplmax, ntp, ntpmax,
      IF (lencounter) THEN
           CALL symba_step_interp(lextra_force, lclose, t, npl, nplm, nplmax, ntp, ntpmax, symba_pl1P, symba_tp1P, j2rp2, j4rp4,   &
                dt, eoffset, mtiny, nplplenc, npltpenc, plplenc_list, pltpenc_list, nmergeadd, nmergesub, mergeadd_list,           &
-               mergesub_list, encounter_file, out_type)
+               mergesub_list, encounter_file, out_type) !A.S. now that we have nplplenc (looped for each planet), do the actual integration + recursion: E(t0/2)[E(t1/2)E(t1)E(t1/2)]^M E(t0/2), including the mergers/encounters too
           lfirst = .TRUE.
      ELSE
           helio_pl1P => symba_pl1P%helio

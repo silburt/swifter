@@ -1,0 +1,16 @@
+A.S. Running this example:
+
+To run this example, you need the input files first:
+1) param.in
+2) swifter_pl.in
+3) swifter_tp.in (if applicable, usually not)
+
+These input files can be output from your main integrator. Once you have these files, run:
+python run_symba.py
+
+This will run the algorithm (after choosing mtiny). Then run:
+python batch_output.py
+
+to unpack the binary data file.
+
+Then you can run calc_energy.py, or movie_output.py, etc. 
