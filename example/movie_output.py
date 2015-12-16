@@ -5,6 +5,7 @@ import glob
 import math
 pi = math.pi
 from mpl_toolkits.mplot3d import Axes3D
+from subprocess import call
 import re
 
 def get_color(id,N_massive):
@@ -51,8 +52,8 @@ for i in xrange(1,N_bodies):
         exit(0)
     cube = np.concatenate((cube,data),axis=0)
 
-#limits for plots = (x,y,z/2)
-limit = 20
+#size limits for plots = (x,y,z/2)
+limit = 1
 
 print 'deleting any existing .png images in output_movie folder'
 call("rm output_movie/*.png",shell=True)

@@ -11,6 +11,6 @@ python run_symba.py
 This will run the algorithm (after choosing mtiny). Then run:
 python batch_output.py
 
-to unpack the binary data file.
+to unpack the binary data file, which by default places the output in the output/ folder.
 
 Then you can run calc_energy.py, or movie_output.py, etc. 
