@@ -37,8 +37,8 @@ INSTALL_DATA    = $(INSTALL) -m 644
 
 # Swifter definitions
 
-#SWIFTER_HOME    = /Users/silburt/phd/swifter
-SWIFTER_HOME    = /data_local/silburt/swifter
+SWIFTER_HOME    = /Users/silburt/phd/swifter
+#SWIFTER_HOME    = /data_local/silburt/swifter
 USER_MODULES    =
 
 # Compiler definitions

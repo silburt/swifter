@@ -201,9 +201,9 @@ PROGRAM tool_follow
                               istep=1
                               ic=ic+1
                               IF (MOD(ic,nskp) == 0) THEN
-                                   WRITE(7,1001)t,ifol,xh,yh,zh,vxh,vyh,vzh
+                                   WRITE(7,1001)t,ifol,xh,yh,zh,vxh,vyh,vzh,mass
  !1001                              FORMAT(1x,e15.7,1x,i3,6(1x,es15.7))
- 1001                              FORMAT(1x,e23.15,1x,i3,6(1x,es23.15))
+ 1001                              FORMAT(1x,e23.15,1x,i3,7(1x,es23.15))
                               END IF
                               tmax=t
                          END IF
