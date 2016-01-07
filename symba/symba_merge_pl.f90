@@ -192,7 +192,7 @@ SUBROUTINE symba_merge_pl(t, dt, index, nplplenc, plplenc_list, nmergeadd, nmerg
         !open (unit=20,file="energyoffset.txt",action="write",status="replace")
         !write (20,*) t, id2, eoffset
          open (unit=20,file="removedparticles.txt",status="old",position="append",action="write")
-         write (20,*) "Collision at t=",t," between Particles ", id1, " and ", id2
+         write (20,*) "Collision at t=",t," between Particles ", id1, " and ", id2, ", r=",sqrt(r2)
         !A.S.
         WRITE(*, *) "Energy offset ", eoffset, " at time t = ",t
           DO k = 1, nplplenc

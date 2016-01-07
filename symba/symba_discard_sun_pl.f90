@@ -65,7 +65,7 @@ SUBROUTINE symba_discard_sun_pl(t, npl, msys, swifter_pl1P, rmin, rmax, rmaxu, l
                     WRITE(*, *) "Particle ", swifter_plP%id, " too far from Sun at t = ", t
                     !A.S.
                     open (unit=20,file="removedparticles.txt",status="old",position="append",action="write")
-                    write (20,*) "Ejection at t=",t," of Particle ", swifter_plP%id, ", too far from sun."
+                    write (20,*) "Ejection at t=",t," of Particle ", swifter_plP%id, ", too far from sun: r=",sqrt(rh2)
                     !A.S.
                ELSE IF ((rmin >= 0.0_DP) .AND. (rh2 < rmin2)) THEN
                     ldiscards = .TRUE.
@@ -73,7 +73,7 @@ SUBROUTINE symba_discard_sun_pl(t, npl, msys, swifter_pl1P, rmin, rmax, rmaxu, l
                     WRITE(*, *) "Particle ", swifter_plP%id, " too close to Sun at t = ", t
                     !A.S.
                     open (unit=20,file="removedparticles.txt",status="old",position="append",action="write")
-                    write (20,*) "Ejection at t=",t," of Particle ", swifter_plP%id, ", too close to the sun."
+                    write (20,*) "Ejection at t=",t," of Particle ", swifter_plP%id, ", too close to the sun: r=",sqrt(rh2)
                     !A.S.
                ELSE IF (rmaxu >= 0.0_DP) THEN
                     rb2 = DOT_PRODUCT(swifter_plP%xb(:), swifter_plP%xb(:))
