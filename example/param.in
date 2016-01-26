@@ -1,14 +1,14 @@
 ! 
-! Parameter file for Swifter, with N=503 total bodies. 
+! Parameter file for Swifter, with N=103 total bodies. 
 ! 
 ! 
 T0             0.0E0 
-TSTOP          1.000000e+05        !In units where G=1
+TSTOP          1.000000e+03        !In units where G=1
 DT             1.249271e-03        !In units where G=1
 PL_IN          swifter_pl.in
 !TP_IN         tp.in     !Commented out for now, no test par
 IN_TYPE        ASCII
-ISTEP_OUT      8004        !# timesteps between outputs 
+ISTEP_OUT      80        !# timesteps between outputs 
 BIN_OUT        out.dat
 OUT_TYPE       REAL8
 OUT_FORM       XV

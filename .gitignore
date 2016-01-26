@@ -2,3 +2,4 @@ example/output/*
 example/*.bin
 example/*.dat
 example/output_movie/*
+example/input_files/*

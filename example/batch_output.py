@@ -10,5 +10,3 @@ if int(unpack) == 1:
         args = ["./tool_follow", "param.in", str(i),"1",str(i)]
         call(args)
 
-call("rm output/*.txt", shell = True)
-call("mv *.txt output/.", shell = True)

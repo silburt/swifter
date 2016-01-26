@@ -149,6 +149,15 @@ CALL symba_reorder_pl(npl, symba_pl1P)
      end if
      write (20,*) ""
      !A.S. ini collisions/ejections file
+     !A.S. ini energy offset file
+     inquire(file="energyoffset.txt", exist=fileexist)
+     if (fileexist) then
+     open (unit=20,file="energyoffset.txt",status="old",position="append",action="write")
+     else
+     open (unit=20,file="energyoffset.txt",status="new",action="write")
+     end if
+     write (20,*) ""
+     !A.S. ini energy offset file
      WRITE(*, *) " *************** MAIN LOOP *************** "
      DO WHILE ((t < tstop) .AND. ((ntp0 == 0) .OR. (ntp > 0)))
           CALL symba_step(lfirst, lextra_force, lclose, t, npl, nplmax, ntp, ntpmax, symba_pl1P, symba_tp1P, j2rp2, j4rp4, dt,    &
