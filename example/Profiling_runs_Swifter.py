@@ -9,6 +9,7 @@ def execute(dir):
     call('cp tool_follow '+dir+'/.',shell=True)
     call('cp batch_output.py '+dir+'/.',shell=True)
     os.chdir(dir)
+    call('rm *.dat *.bin *.out *.txt', shell=True)
     fos = open('elapsed_time.txt','a')
     fos.write('start time = '+str(time.time())+'\n')
     args = ["./swifter_symba", "param.in", "1E-07"]
