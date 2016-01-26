@@ -139,24 +139,27 @@ CALL symba_reorder_pl(npl, symba_pl1P)
         open (unit=20,file="energyoutput.txt",status="new",action="write")
      end if
      write (20,*) t, te + eoffset
+     close(unit=20)
      !A.S. output initial energy
      !A.S. ini collisions/ejections file
      inquire(file="removedparticles.txt", exist=fileexist)
      if (fileexist) then
-     open (unit=20,file="removedparticles.txt",status="old",position="append",action="write")
+     open (unit=21,file="removedparticles.txt",status="old",position="append",action="write")
      else
-     open (unit=20,file="removedparticles.txt",status="new",action="write")
+     open (unit=21,file="removedparticles.txt",status="new",action="write")
      end if
-     write (20,*) ""
+     write (21,*) ""
+     close(unit=21)
      !A.S. ini collisions/ejections file
      !A.S. ini energy offset file
      inquire(file="energyoffset.txt", exist=fileexist)
      if (fileexist) then
-     open (unit=20,file="energyoffset.txt",status="old",position="append",action="write")
+     open (unit=22,file="energyoffset.txt",status="old",position="append",action="write")
      else
-     open (unit=20,file="energyoffset.txt",status="new",action="write")
+     open (unit=22,file="energyoffset.txt",status="new",action="write")
      end if
-     write (20,*) ""
+     write (22,*) ""
+     close(unit=22)
      !A.S. ini energy offset file
      WRITE(*, *) " *************** MAIN LOOP *************** "
      DO WHILE ((t < tstop) .AND. ((ntp0 == 0) .OR. (ntp > 0)))
