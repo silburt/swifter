@@ -90,9 +90,9 @@ SUBROUTINE symba_discard_pl(t, npl, nplmax, nsp, symba_pl1P, symba_pld1P, rmin, 
           CALL symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, tef, htot)
           eoffset = eoffset + tei - tef
           !A.S.
-          open (unit=23,file="energyoffset.txt",status="old",position="append",action="write")
-          write (23,*) t,eoffset, "Ejection"
-          close(unit=23)
+          !open (unit=23,file="energyoffset.txt",status="old",position="append",action="write")
+          !write (23,*) t,eoffset, "Ejection"
+          !close(unit=23)
      END IF
 
      RETURN
