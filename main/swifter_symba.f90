@@ -71,7 +71,7 @@ PROGRAM swifter_symba
      LOGICAL(LGT)                                      :: lfirst, fileexist
      INTEGER(I4B)                                      :: npl, ntp, ntp0, nsppl, nsptp, iout, idump, iloop
      INTEGER(I4B)                                      :: nplplenc, npltpenc, nmergeadd, nmergesub
-     REAL(DP)                                          :: t, tfrac, tbase, mtiny, ke, pe, te, eoffset
+     REAL(DP)                                          :: t, tfrac, tbase, mtiny, ke, pe, te, eoffset, te0
      REAL(DP), DIMENSION(NDIM)                         :: htot
      CHARACTER(STRMAX)                                 :: inparfile, tempmtiny
      TYPE(swifter_pl), POINTER                         :: swifter_pl1P
@@ -138,8 +138,9 @@ CALL symba_reorder_pl(npl, symba_pl1P)
      else
         open (unit=20,file="energyoutput.txt",status="new",action="write")
      end if
-     write (20,*) t, te + eoffset
+     write (20,*) t, te, eoffset
      close(unit=20)
+     te0 = te
      !A.S. output initial energy
      !A.S. ini collisions/ejections file
      inquire(file="removedparticles.txt", exist=fileexist)
@@ -193,8 +194,9 @@ CALL symba_reorder_pl(npl, symba_pl1P)
                     CALL io_write_frame(t, npl, ntp, swifter_pl1P, swifter_tp1P, outfile, out_type, out_form, out_stat)
                     call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
                     !A.S. output energy
-                    open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
-                    write (20,*) t, te, eoffset
+                    open (unit=26,file="energyoutput.txt",status="old",position="append",action="write")
+                    write (26,*) t, abs((te + eoffset - te0)/te0), te, eoffset
+                    close(unit=26)
                     !A.S. output energy
                     iout = istep_out
                END IF

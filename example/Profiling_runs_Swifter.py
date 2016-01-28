@@ -5,8 +5,8 @@ import time
 import os
 
 def execute(dir):
-    call('cp swifter_symba '+dir+'/.',shell=True)
-    call('cp tool_follow '+dir+'/.',shell=True)
+    call('cp ../bin/swifter_symba '+dir+'/.',shell=True)
+    call('cp ../bin/tool_follow '+dir+'/.',shell=True)
     call('cp batch_output.py '+dir+'/.',shell=True)
     os.chdir(dir)
     call('rm *.dat *.bin *.out *.txt', shell=True)
