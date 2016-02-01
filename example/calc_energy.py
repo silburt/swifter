@@ -19,9 +19,7 @@ for i in xrange(1,N):
     temp = lines[i]
     temp2 = temp.split()
     t[i] = float(temp2[0])
-    E = float(temp2[1])
-    Eoffset = float(temp2[2])
-    dE[i] = abs((E0 - E - Eoffset)/E0)
+    dE[i] = float(temp2[1])
 
 plt.plot(t,dE,'o')
 plt.yscale('log')
