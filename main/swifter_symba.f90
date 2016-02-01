@@ -136,7 +136,7 @@ CALL symba_reorder_pl(npl, symba_pl1P)
      xyzcounter = 0
      numdt = 20
      n_output = tstop/dt/float(istep_out);
-     if (n_output > 100000) then n_output = 100000 end if
+     if (n_output > 100000) n_output = 100000
      t_log_output = (tstop + 1)**(1./(n_output - 1.));
      t_output = dt;
 !A.S. vars
