@@ -8,5 +8,6 @@ if int(unpack) == 1:
     N = int(N)
     for i in xrange(1,N+1):
         args = ["./tool_follow", "param.in", str(i),"1",str(i)]
+        print args
         call(args)
 
