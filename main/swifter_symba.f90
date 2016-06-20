@@ -86,6 +86,10 @@ PROGRAM swifter_symba
      TYPE(symba_pltpenc), DIMENSION(NENMAX)            :: pltpenc_list
      TYPE(symba_merger), DIMENSION(:), ALLOCATABLE     :: mergeadd_list, mergesub_list
 
+! A.S. timing
+    real*4 timer(2), total_time
+    call etime(timer, total_time)
+
 ! Executable code
      CALL util_version
      !WRITE(*, 100, ADVANCE = "NO") "Enter name of parameter data file: "
@@ -253,6 +257,12 @@ CALL symba_reorder_pl(npl, symba_pl1P)
             end if
           !A.S. outputting xyz
      END DO
+    ! A.S. timing
+    call etime(timer, total_time)
+    open (unit=26,file="ET.txt",status="new",action="write")
+    write (26,*) 'Elapsed time = ', total_time
+    close (unit=26)
+    ! A.S. timing
      CALL io_dump_param(nplmax, ntpmax, ntp, t, tstop, dt, in_type, istep_out, outfile, out_type, out_form, istep_dump, j2rp2,    &
           j4rp4, lclose, rmin, rmax, rmaxu, qmin, qmin_coord, qmin_alo, qmin_ahi, encounter_file, lextra_force, lbig_discard,     &
           lrhill_present)

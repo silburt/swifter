@@ -1,19 +1,19 @@
 ! 
-! Parameter file for Swifter, with N=5 total bodies. 
+! Parameter file for Swifter, with N=2 total bodies. 
 ! 
 ! 
 T0             0.0E0 
-TSTOP          1.000000e+04        !In units where G=1
+TSTOP          1.000000e+05        !In units where G=1
 DT             1.500000e-03        !In units where G=1
 PL_IN          swifter_pl.in
 !TP_IN         tp.in     !Commented out for now, no test par
 IN_TYPE        ASCII
-ISTEP_OUT      267        !# timesteps between outputs 
+ISTEP_OUT      1333        !# timesteps between outputs 
 BIN_OUT        out.dat
 OUT_TYPE       REAL8
 OUT_FORM       XV
 OUT_STAT       NEW
-ISTEP_DUMP     133500     !Dump parameters (incase of crash)
+ISTEP_DUMP     666500     !Dump parameters (incase of crash)
 J2             0.0E0
 J4             0.0E0
 CHK_CLOSE      yes

@@ -10,12 +10,6 @@ mtiny = raw_input("Enter Mtiny value (default, Msun=1, mtiny=1E-07): ")
 if not mtiny:
     mtiny = default_mtiny
 
-start_time = time.time()
-
 args = ["./swifter_symba", "param.in", mtiny]
 call(args)
 
-elapsed_time = time.time() - start_time
-print 'elapsed time =',elapsed_time
-fos = open('elapsed_time.txt','w')
-fos.write('elapsed time = '+str(elapsed_time))
