@@ -69,14 +69,13 @@ PROGRAM swifter_symba
 
 ! Internals
      LOGICAL(LGT)                                      :: lfirst, fileexist
-     INTEGER(I4B)                                      :: npl, ntp, ntp0, nsppl, nsptp, iout, idump, iloop, i
-     INTEGER(I4B)                                      :: nplplenc, npltpenc, nmergeadd, nmergesub, xyzcounter, xyzoutput
-     REAL(DP)                                          :: t, tfrac, tbase, mtiny, ke, pe, te, eoffset, te0, toutxyz, msys, numdt, &
-                                                        n_output, t_log_output, t_output
-     REAL(DP), DIMENSION(NDIM)                         :: htot, x
+     INTEGER(I4B)                                      :: npl, ntp, ntp0, nsppl, nsptp, iout, idump, iloop
+     INTEGER(I4B)                                      :: nplplenc, npltpenc, nmergeadd, nmergesub
+     REAL(DP)                                          :: t, tfrac, tbase, mtiny, ke, pe, te, eoffset, te0
+     REAL(DP), DIMENSION(NDIM)                         :: htot
      CHARACTER(STRMAX)                                 :: inparfile, tempmtiny, filename
      character(5)                                      :: tempout       !A.S.
-     TYPE(swifter_pl), POINTER                         :: swifter_pl1P, swifter_pliP
+     TYPE(swifter_pl), POINTER                         :: swifter_pl1P
      TYPE(swifter_tp), POINTER                         :: swifter_tp1P
      TYPE(symba_pl), DIMENSION(:), ALLOCATABLE, TARGET :: symba_plA
      TYPE(symba_tp), DIMENSION(:), ALLOCATABLE, TARGET :: symba_tpA
@@ -85,10 +84,6 @@ PROGRAM swifter_symba
      TYPE(symba_plplenc), DIMENSION(NENMAX)            :: plplenc_list
      TYPE(symba_pltpenc), DIMENSION(NENMAX)            :: pltpenc_list
      TYPE(symba_merger), DIMENSION(:), ALLOCATABLE     :: mergeadd_list, mergesub_list
-
-! A.S. timing
-    real*4 timer(2), total_time
-    call etime(timer, total_time)
 
 ! Executable code
      CALL util_version
@@ -117,9 +112,11 @@ PROGRAM swifter_symba
      CALL io_init_pl(inplfile, in_type, lclose, lrhill_present, npl, swifter_pl1P)
      !WRITE(*, 100, ADVANCE = "NO") "Enter the smallest mass to self-gravitate: "
      !READ(*, *) mtiny
-     CALL getarg(2,tempmtiny)         !A.S.
+     CALL getarg(2,tempmtiny)         !A.S. automatically read args, no prompt
      READ (tempmtiny, *) mtiny        !A.S.
-CALL symba_reorder_pl(npl, symba_pl1P)
+     call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)   !A.S. initial energy
+     te0 = te                                                                       !A.S. initial energy
+     CALL symba_reorder_pl(npl, symba_pl1P)
      CALL io_init_tp(intpfile, in_type, ntp, swifter_tp1P)
      CALL util_valid(npl, ntp, swifter_pl1P, swifter_tp1P)
      lfirst = .TRUE.
@@ -134,54 +131,20 @@ CALL symba_reorder_pl(npl, symba_pl1P)
      nsppl = 0
      nsptp = 0
      eoffset = 0.0_DP
-!A.S. vars
-     xyzoutput = 0      !A.S. Important to keep =0 if you don't need it!
-     toutxyz = 0
-     xyzcounter = 0
-     numdt = 20
-     n_output = tstop/dt/float(istep_out);
-     if (n_output > 100000) n_output = 100000
-     t_log_output = (tstop + 1)**(1./(n_output - 1.));
-     t_output = dt;
-!A.S. vars
      NULLIFY(symba_pld1P, symba_tpd1P)
      IF (istep_out > 0) CALL io_write_frame(t, npl, ntp, swifter_pl1P, swifter_tp1P, outfile, out_type, out_form, out_stat)
      !A.S. output initial energy
      call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
      inquire(file="energyoutput.txt", exist=fileexist)
      if (fileexist) then
-        open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
+     open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
      else
-        open (unit=20,file="energyoutput.txt",status="new",action="write")
+     open (unit=20,file="energyoutput.txt",status="new",action="write")
      end if
      write (20,*) t, te, eoffset
      close(unit=20)
      te0 = te
      !A.S. output initial energy
-     !A.S. ini collisions/ejections file
-     inquire(file="removedparticles.txt", exist=fileexist)
-     if (fileexist) then
-     open (unit=21,file="removedparticles.txt",status="old",position="append",action="write")
-     else
-     open (unit=21,file="removedparticles.txt",status="new",action="write")
-     end if
-     write (21,*) ""
-     close(unit=21)
-     !A.S. ini collisions/ejections file
-     !A.S. output xyz positions
-    if (xyzoutput == 1) then
-        call coord_h2b(npl, swifter_pl1P, msys)
-        swifter_pliP => swifter_pl1P
-        open (unit=21,file="xyz_outputs/swifter0000.txt",status="new",action="write")
-        do i=1,npl
-            x(:) = swifter_pliP%xb(:)
-            write (21,*) t, i, x(1), x(2), x(3)
-            swifter_pliP => swifter_pliP%nextP
-        end do
-        close(unit=21)
-        toutxyz = toutxyz + numdt*dt
-    end if
-     !A.S. output xyz postitions
      WRITE(*, *) " *************** MAIN LOOP *************** "
      DO WHILE ((t < tstop) .AND. ((ntp0 == 0) .OR. (ntp > 0)))
           CALL symba_step(lfirst, lextra_force, lclose, t, npl, nplmax, ntp, ntpmax, symba_pl1P, symba_tp1P, j2rp2, j4rp4, dt,    &
@@ -210,9 +173,8 @@ CALL symba_reorder_pl(npl, symba_pl1P)
           END IF
           IF (istep_out > 0) THEN
                iout = iout - 1
-               IF (iout == 0) THEN  !A.S. Here is where the output happens I think every ISTEP_OUT (or iout)
+               IF (iout == 0) THEN
                     CALL io_write_frame(t, npl, ntp, swifter_pl1P, swifter_tp1P, outfile, out_type, out_form, out_stat)
-                    call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
                     iout = istep_out
                END IF
           END IF
@@ -230,39 +192,20 @@ CALL symba_reorder_pl(npl, symba_pl1P)
                     idump = istep_dump
                END IF
           END IF
-          !A.S. log output energy
-            if (t > t_output) then
-                t_output = t*t_log_output
-                call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
-                open (unit=26,file="energyoutput.txt",status="old",position="append",action="write")
-                write (26,*) t, abs((te + eoffset - te0)/te0), te, eoffset
-                close(unit=26)
-            end if
-          !A.S. log output
-          !A.S. outputting xyz
-            if (t > toutxyz - 0.01*dt .and. xyzoutput == 1) then
-                xyzcounter = xyzcounter + 1
-                write (tempout,'(I4.4)') xyzcounter ! converting integer to string using a 'internal file'
-                filename='xyz_outputs/swifter'//trim(tempout)//'.txt'
-                call coord_h2b(npl, swifter_pl1P, msys)
-                open (unit=21,file=filename,status="new",action="write")
-                swifter_pliP => swifter_pl1P
-                do i=1,npl
-                    x(:) = swifter_pliP%xb(:)
-                    write (21,*) t, i, x(1), x(2), x(3)
-                    swifter_pliP => swifter_pliP%nextP
-                end do
-                close(unit=21)
-                toutxyz = toutxyz + numdt*dt
-            end if
-          !A.S. outputting xyz
+          !A.S. output final few energies
+          if (tstop - t < 3*dt) then
+          call symba_energy(npl, nplmax, swifter_pl1P, j2rp2, j4rp4, ke, pe, te, htot)
+          inquire(file="energyoutput.txt", exist=fileexist)
+          if (fileexist) then
+            open (unit=20,file="energyoutput.txt",status="old",position="append",action="write")
+          else
+            open (unit=20,file="energyoutput.txt",status="new",action="write")
+          end if
+            write (20,*) t, abs((te + eoffset - te0)/te0), te, eoffset
+          close(unit=20)
+          end if
+          !A.S. output final few energies,
      END DO
-    ! A.S. timing
-    call etime(timer, total_time)
-    open (unit=26,file="ET.txt",status="new",action="write")
-    write (26,*) 'Elapsed time = ', total_time
-    close (unit=26)
-    ! A.S. timing
      CALL io_dump_param(nplmax, ntpmax, ntp, t, tstop, dt, in_type, istep_out, outfile, out_type, out_form, istep_dump, j2rp2,    &
           j4rp4, lclose, rmin, rmax, rmaxu, qmin, qmin_coord, qmin_alo, qmin_ahi, encounter_file, lextra_force, lbig_discard,     &
           lrhill_present)

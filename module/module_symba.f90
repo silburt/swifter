@@ -31,6 +31,8 @@ MODULE module_symba
 
      INTEGER(I4B), PARAMETER :: NENMAX = 32767
      INTEGER(I4B), PARAMETER :: NTENC = 3
+!     REAL(DP), PARAMETER     :: RHSCALE = 10.0_DP    !A.S. scale factor for hill sphere to take shorter time step
+!     REAL(DP), PARAMETER     :: RSHELL = 0.6_DP     !A.S. Ratio of shell radii squared
      REAL(DP), PARAMETER     :: RHSCALE = 6.5_DP    !A.S. scale factor for hill sphere to take shorter time step
      REAL(DP), PARAMETER     :: RSHELL = 0.48075_DP !A.S. Ratio of shell radii squared
 
