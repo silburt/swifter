@@ -11,12 +11,12 @@ def execute(dir):
     call('cp batch_output.py '+dir+'/.',shell=True)
     os.chdir(dir)
     call('rm *.dat *.bin *.out *.txt', shell=True)
-    fos = open('elapsed_time.txt','a')
-    fos.write('start time = '+str(time.time())+'\n')
+    start = time.time()
     args = ["./swifter_symba", "param.in", MTINY]
     call(args)
-    fos = open('elapsed_time.txt','a')
-    fos.write('finish time = '+str(time.time()))
+    f = open('elapsed_time.txt','w')
+    f.write('Elapsed time is %f seconds.'%(time.time() - start))
+    f.close()
 
 if __name__== '__main__':
     files = [x[0] for x in os.walk('input_files')]
